@@ -85,11 +85,12 @@ function ProjectCard({ project, featured = false, isDark, className }: ProjectCa
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={cn(
         "group overflow-hidden rounded-[32px] border shadow-sm transition-colors duration-500",
+        featured && "lg:flex lg:h-full lg:flex-col",
         isDark ? "border-white/10 bg-[#111820]" : "border-slate-200/70 bg-[#f9fafb]",
         className,
       )}
     >
-      <div className={cn("relative overflow-hidden", featured ? "h-[460px]" : "h-[260px]")}>
+      <div className={cn("relative overflow-hidden", featured ? "h-[460px] lg:h-auto lg:flex-1" : "h-[260px]")}>
         <img
           src={assetPath(image)}
           alt={`Proyecto ${project.name}`}
