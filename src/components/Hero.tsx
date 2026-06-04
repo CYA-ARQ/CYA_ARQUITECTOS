@@ -23,7 +23,7 @@ export function Hero({ isDark }: HeroProps) {
     document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const syncVideosFrom = (source: HTMLVideoElement | null) => {
+  const syncVideosFrom = (source: HTMLVideoElement | null, force = false) => {
     const dayVideo = dayVideoRef.current;
     const nightVideo = nightVideoRef.current;
 
@@ -36,7 +36,7 @@ export function Hero({ isDark }: HeroProps) {
     const targetDuration = Number.isFinite(target.duration) ? target.duration : sourceDuration;
     const nextTime = targetDuration > 0 ? source.currentTime % targetDuration : source.currentTime;
 
-    if (Math.abs(target.currentTime - nextTime) > 0.08) {
+    if (force || Math.abs(target.currentTime - nextTime) > 0.015) {
       target.currentTime = nextTime;
     }
 
@@ -46,9 +46,18 @@ export function Hero({ isDark }: HeroProps) {
 
   useEffect(() => {
     const previousVisibleVideo = isDark ? dayVideoRef.current : nightVideoRef.current;
-    const timeoutId = window.setTimeout(() => syncVideosFrom(previousVisibleVideo), 50);
+    const syncVisiblePair = () => {
+      syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current);
+    };
+    syncVideosFrom(previousVisibleVideo, true);
 
-    return () => window.clearTimeout(timeoutId);
+    const timeoutId = window.setTimeout(() => syncVideosFrom(previousVisibleVideo, true), 50);
+    const intervalId = window.setInterval(syncVisiblePair, 1000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.clearInterval(intervalId);
+    };
   }, [isDark]);
 
   return (
