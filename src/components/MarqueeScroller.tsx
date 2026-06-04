@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { marqueeItems } from "../data/siteData";
+import { cn } from "../lib/utils";
 
 const icons: Record<(typeof marqueeItems)[number]["icon"], LucideIcon> = {
   Armchair,
@@ -22,7 +23,11 @@ const icons: Record<(typeof marqueeItems)[number]["icon"], LucideIcon> = {
   MessagesSquare,
 };
 
-export function MarqueeScroller() {
+type MarqueeScrollerProps = {
+  isDark: boolean;
+};
+
+export function MarqueeScroller({ isDark }: MarqueeScrollerProps) {
   const items = [...marqueeItems, ...marqueeItems];
 
   return (
@@ -42,7 +47,10 @@ export function MarqueeScroller() {
             return (
               <div
                 key={`${item.label}-${index}`}
-                className="group relative h-24 w-40 shrink-0 flex items-center justify-center rounded-full bg-white border border-slate-200/60 shadow-sm hover:border-slate-300 transition-all overflow-hidden"
+                className={cn(
+                  "group relative flex h-24 w-40 shrink-0 items-center justify-center overflow-hidden rounded-full border shadow-sm transition-all",
+                  isDark ? "border-white/10 bg-[#111820]" : "border-slate-200/60 bg-white hover:border-slate-300",
+                )}
                 aria-label={item.label}
               >
                 <div
@@ -52,11 +60,19 @@ export function MarqueeScroller() {
                 />
                 <div className="relative z-10 flex flex-col items-center gap-2">
                   <Icon
-                    className="h-4 w-4 text-[#c9a46a] transition-colors group-hover:text-white"
+                    className={cn(
+                      "h-4 w-4 transition-colors group-hover:text-white",
+                      isDark ? "text-[#f5c982]" : "text-[#c9a46a]",
+                    )}
                     aria-hidden="true"
                     strokeWidth={1.8}
                   />
-                  <span className="relative z-10 text-[13px] font-semibold text-[#0a1b33] group-hover:text-white transition-colors">
+                  <span
+                    className={cn(
+                      "relative z-10 text-[13px] font-semibold transition-colors group-hover:text-white",
+                      isDark ? "text-white" : "text-[#0a1b33]",
+                    )}
+                  >
                     {item.label}
                   </span>
                 </div>

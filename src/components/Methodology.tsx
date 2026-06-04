@@ -1,9 +1,19 @@
 import { motion } from "motion/react";
 import { methodology } from "../data/siteData";
+import { cn } from "../lib/utils";
 
-export function Methodology() {
+type MethodologyProps = {
+  isDark: boolean;
+};
+
+export function Methodology({ isDark }: MethodologyProps) {
   return (
-    <section className="bg-[#0a152d] px-4 py-20 text-white md:px-6 md:py-28">
+    <section
+      className={cn(
+        "px-4 py-20 text-white transition-colors duration-500 md:px-6 md:py-28",
+        isDark ? "bg-[#030509]" : "bg-[#0a152d]",
+      )}
+    >
       <div className="mx-auto max-w-[1200px]">
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
@@ -29,7 +39,10 @@ export function Methodology() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.55, delay: index * 0.04, ease: "easeOut" }}
-              className="rounded-[30px] border border-white/10 bg-white/[0.04] p-6"
+              className={cn(
+                "rounded-[30px] border p-6 transition-colors",
+                isDark ? "border-white/12 bg-white/[0.06]" : "border-white/10 bg-white/[0.04]",
+              )}
             >
               <p className="text-[12px] font-semibold text-[#c9a46a]">{step.number}</p>
               <h3 className="mt-6 font-display text-xl font-medium">{step.title}</h3>

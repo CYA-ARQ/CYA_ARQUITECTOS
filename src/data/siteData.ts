@@ -9,6 +9,7 @@ export type Project = {
   description: string;
   location: string;
   image: string;
+  darkImage?: string;
   featured?: boolean;
 };
 
@@ -84,6 +85,7 @@ export const projects: Project[] = [
       "Propuesta para 200 departamentos con lenguaje contemporáneo, patios interiores y relación directa con el paisaje costero.",
     location: "Los Cabos de San Lucas, Baja California Sur, México",
     image: "/projects/arena-azul-exterior.webp",
+    darkImage: "/projects/night/arena-azul-exterior.webp",
     featured: true,
   },
   {
@@ -93,6 +95,7 @@ export const projects: Project[] = [
       "Desarrollo interior del complejo con ambientes luminosos, materiales cálidos y una experiencia residencial serena.",
     location: "Los Cabos de San Lucas, Baja California Sur, México",
     image: "/projects/arena-azul-interiores.webp",
+    darkImage: "/projects/night/arena-azul-interiores.webp",
   },
   {
     name: "Biblioteca de la Academia Diplomática",
@@ -101,6 +104,7 @@ export const projects: Project[] = [
       "Proyecto académico y público para una biblioteca con enfoque institucional, lectura urbana y espacialidad controlada.",
     location: "Distrito de Jesús María, Lima, Perú",
     image: "/projects/biblioteca-academia-diplomatica.webp",
+    darkImage: "/projects/night/biblioteca-academia-diplomatica.webp",
   },
   {
     name: "La Paz, Casa Pedregal",
@@ -109,6 +113,7 @@ export const projects: Project[] = [
       "Casa integrada al terreno, con lectura topográfica, privacidad y apertura hacia el paisaje de Baja California Sur.",
     location: "Pedregal de La Paz, Baja California Sur, México",
     image: "/projects/casa-pedregal.webp",
+    darkImage: "/projects/night/casa-pedregal.webp",
   },
   {
     name: "Casa de los Viejitos Work",
@@ -117,6 +122,7 @@ export const projects: Project[] = [
       "Vivienda de carácter cálido en Mérida, con patios, luz natural y una escala doméstica cuidadosamente proporcionada.",
     location: "Mérida, Yucatán, México",
     image: "/projects/casa-viejitos.webp",
+    darkImage: "/projects/night/casa-viejitos.webp",
   },
   {
     name: "Casa Coloma",
@@ -133,6 +139,7 @@ export const projects: Project[] = [
       "Mini-departamento resuelto con criterio de eficiencia espacial, mobiliario integrado y una paleta contemporánea.",
     location: "Miraflores, Lima, Perú",
     image: "/projects/live-space.webp",
+    darkImage: "/projects/night/live-space.webp",
   },
   {
     name: "Supervisión de obra",
@@ -141,6 +148,7 @@ export const projects: Project[] = [
       "Control y seguimiento de obra para mantener coherencia entre diseño, ejecución, proveedores, costos y plazos.",
     location: "Santiago de Surco, Lima, Perú",
     image: "/projects/supervision-obra.webp",
+    darkImage: "/projects/night/supervision-obra.webp",
   },
 ];
 

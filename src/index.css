@@ -25,6 +25,11 @@ body {
   min-height: 100vh;
   background: #f9fafb;
   font-family: var(--font-sans);
+  transition: background-color 500ms ease;
+}
+
+:root[data-theme="dark"] body {
+  background: #070a0f;
 }
 
 button,
