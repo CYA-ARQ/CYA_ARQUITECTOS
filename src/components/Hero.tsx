@@ -6,10 +6,10 @@ import { cn } from "../lib/utils";
 import { FloatingNavbar } from "./FloatingNavbar";
 import { LogoMark } from "./LogoMark";
 
-const heroVideo = assetPath("hero/cya-hero-loop.mp4?v=sync-20260604f");
-const heroPoster = assetPath("hero/cya-hero-loop-poster.webp?v=sync-20260604f");
-const heroVideoNight = assetPath("hero/cya-hero-loop-night.mp4?v=sync-20260604f");
-const heroPosterNight = assetPath("hero/cya-hero-loop-night-poster.webp?v=sync-20260604f");
+const heroVideo = assetPath("hero/cya-hero-loop.mp4?v=sync-20260604g");
+const heroPoster = assetPath("hero/cya-hero-loop-poster.webp?v=sync-20260604g");
+const heroVideoNight = assetPath("hero/cya-hero-loop-night.mp4?v=sync-20260604g");
+const heroPosterNight = assetPath("hero/cya-hero-loop-night-poster.webp?v=sync-20260604g");
 const syncThresholdSeconds = 0.005;
 
 type HeroProps = {
@@ -96,7 +96,7 @@ export function Hero({ isDark }: HeroProps) {
             poster={heroPoster}
             onLoadedMetadata={() => syncVideosFrom(dayVideoRef.current)}
             className={cn(
-              "absolute inset-0 h-full w-full object-contain transition-opacity duration-700",
+              "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
               isDark ? "opacity-0" : "opacity-[0.9]",
             )}
           />
@@ -111,7 +111,7 @@ export function Hero({ isDark }: HeroProps) {
             poster={heroPosterNight}
             onLoadedMetadata={() => syncVideosFrom(dayVideoRef.current)}
             className={cn(
-              "absolute inset-0 h-full w-full object-contain transition-opacity duration-700",
+              "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
               isDark ? "opacity-[0.82]" : "opacity-0",
             )}
           />
