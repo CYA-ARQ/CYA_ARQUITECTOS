@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { studio } from "../data/siteData";
 import { assetPath } from "../lib/assets";
@@ -15,9 +16,40 @@ type HeroProps = {
 };
 
 export function Hero({ isDark }: HeroProps) {
+  const dayVideoRef = useRef<HTMLVideoElement>(null);
+  const nightVideoRef = useRef<HTMLVideoElement>(null);
+
   const scrollToContact = () => {
     document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  const syncVideosFrom = (source: HTMLVideoElement | null) => {
+    const dayVideo = dayVideoRef.current;
+    const nightVideo = nightVideoRef.current;
+
+    if (!dayVideo || !nightVideo || !source) {
+      return;
+    }
+
+    const target = source === dayVideo ? nightVideo : dayVideo;
+    const sourceDuration = Number.isFinite(source.duration) ? source.duration : 0;
+    const targetDuration = Number.isFinite(target.duration) ? target.duration : sourceDuration;
+    const nextTime = targetDuration > 0 ? source.currentTime % targetDuration : source.currentTime;
+
+    if (Math.abs(target.currentTime - nextTime) > 0.08) {
+      target.currentTime = nextTime;
+    }
+
+    void dayVideo.play().catch(() => undefined);
+    void nightVideo.play().catch(() => undefined);
+  };
+
+  useEffect(() => {
+    const previousVisibleVideo = isDark ? dayVideoRef.current : nightVideoRef.current;
+    const timeoutId = window.setTimeout(() => syncVideosFrom(previousVisibleVideo), 50);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isDark]);
 
   return (
     <section id="inicio" className="px-4 pt-5 md:px-6 md:pt-8">
@@ -29,16 +61,33 @@ export function Hero({ isDark }: HeroProps) {
       >
         <div className="pointer-events-none absolute inset-0 z-0 select-none overflow-hidden">
           <video
-            key={isDark ? "hero-night" : "hero-day"}
-            src={isDark ? heroVideoNight : heroVideo}
+            ref={dayVideoRef}
+            src={heroVideo}
             autoPlay
             loop
             muted
             playsInline
-            poster={isDark ? heroPosterNight : heroPoster}
+            preload="auto"
+            poster={heroPoster}
+            onLoadedMetadata={() => syncVideosFrom(dayVideoRef.current)}
             className={cn(
-              "h-full w-full scale-105 object-cover transition-all duration-700",
-              isDark ? "opacity-82" : "opacity-90",
+              "absolute inset-0 h-full w-full scale-105 object-cover transition-opacity duration-700",
+              isDark ? "opacity-0" : "opacity-[0.9]",
+            )}
+          />
+          <video
+            ref={nightVideoRef}
+            src={heroVideoNight}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster={heroPosterNight}
+            onLoadedMetadata={() => syncVideosFrom(dayVideoRef.current)}
+            className={cn(
+              "absolute inset-0 h-full w-full scale-105 object-cover transition-opacity duration-700",
+              isDark ? "opacity-[0.82]" : "opacity-0",
             )}
           />
           <div
