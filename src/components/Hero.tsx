@@ -10,7 +10,8 @@ const heroVideo = assetPath("hero/cya-hero-loop.mp4?v=sync-20260604g");
 const heroPoster = assetPath("hero/cya-hero-loop-poster.webp?v=sync-20260604g");
 const heroVideoNight = assetPath("hero/cya-hero-loop-night.mp4?v=sync-20260604g");
 const heroPosterNight = assetPath("hero/cya-hero-loop-night-poster.webp?v=sync-20260604g");
-const syncThresholdSeconds = 0.005;
+const syncThresholdSeconds = 0.08;
+const driftThresholdSeconds = 0.28;
 
 type HeroProps = {
   isDark: boolean;
@@ -24,24 +25,12 @@ export function Hero({ isDark }: HeroProps) {
     document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const syncVideosFrom = useCallback((source: HTMLVideoElement | null, force = false) => {
+  const playVideos = useCallback(() => {
     const dayVideo = dayVideoRef.current;
     const nightVideo = nightVideoRef.current;
 
-    if (!dayVideo || !nightVideo || !source) {
+    if (!dayVideo || !nightVideo) {
       return;
-    }
-
-    const target = source === dayVideo ? nightVideo : dayVideo;
-    const sourceDuration = Number.isFinite(source.duration) ? source.duration : 0;
-    const targetDuration = Number.isFinite(target.duration) ? target.duration : sourceDuration;
-    const rawNextTime = source.currentTime;
-    const nextTime = targetDuration > 0 ? rawNextTime % targetDuration : rawNextTime;
-
-    const delta = Math.abs(target.currentTime - nextTime);
-
-    if (force || delta > syncThresholdSeconds) {
-      target.currentTime = nextTime;
     }
 
     dayVideo.playbackRate = 1;
@@ -50,19 +39,44 @@ export function Hero({ isDark }: HeroProps) {
     void nightVideo.play().catch(() => undefined);
   }, []);
 
+  const syncVideosFrom = useCallback((source: HTMLVideoElement | null, force = false) => {
+    const dayVideo = dayVideoRef.current;
+    const nightVideo = nightVideoRef.current;
+
+    if (!dayVideo || !nightVideo || !source) {
+      return;
+    }
+
+    const threshold = force ? syncThresholdSeconds : driftThresholdSeconds;
+    const target = source === dayVideo ? nightVideo : dayVideo;
+    const sourceDuration = Number.isFinite(source.duration) ? source.duration : 0;
+    const targetDuration = Number.isFinite(target.duration) ? target.duration : sourceDuration;
+    const rawNextTime = source.currentTime;
+    const nextTime = targetDuration > 0 ? rawNextTime % targetDuration : rawNextTime;
+
+    const delta = Math.abs(target.currentTime - nextTime);
+
+    if (delta > threshold) {
+      target.currentTime = nextTime;
+    }
+
+    playVideos();
+  }, [playVideos]);
+
   useEffect(() => {
-    let frameId = 0;
     syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current, true);
 
-    const syncVisiblePair = () => {
+    const settleId = window.setTimeout(() => {
       syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current);
-      frameId = window.requestAnimationFrame(syncVisiblePair);
-    };
+    }, 650);
 
-    frameId = window.requestAnimationFrame(syncVisiblePair);
+    const intervalId = window.setInterval(() => {
+      syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current);
+    }, 1800);
 
     return () => {
-      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(settleId);
+      window.clearInterval(intervalId);
     };
   }, [isDark, syncVideosFrom]);
 
@@ -70,11 +84,13 @@ export function Hero({ isDark }: HeroProps) {
     const handleBeforeThemeToggle = (event: Event) => {
       const nextIsDark = Boolean((event as CustomEvent<{ nextIsDark?: boolean }>).detail?.nextIsDark);
       syncVideosFrom(nextIsDark ? dayVideoRef.current : nightVideoRef.current, true);
+      window.setTimeout(playVideos, 80);
+      window.setTimeout(playVideos, 260);
     };
 
     window.addEventListener("cya:before-theme-toggle", handleBeforeThemeToggle);
     return () => window.removeEventListener("cya:before-theme-toggle", handleBeforeThemeToggle);
-  }, [syncVideosFrom]);
+  }, [playVideos, syncVideosFrom]);
 
   return (
     <section id="inicio" className="px-4 pt-5 md:px-6 md:pt-8">
@@ -95,6 +111,7 @@ export function Hero({ isDark }: HeroProps) {
             preload="auto"
             poster={heroPoster}
             onLoadedMetadata={() => syncVideosFrom(dayVideoRef.current)}
+            onCanPlay={playVideos}
             className={cn(
               "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
               isDark ? "opacity-0" : "opacity-[0.9]",
@@ -110,6 +127,7 @@ export function Hero({ isDark }: HeroProps) {
             preload="auto"
             poster={heroPosterNight}
             onLoadedMetadata={() => syncVideosFrom(dayVideoRef.current)}
+            onCanPlay={playVideos}
             className={cn(
               "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
               isDark ? "opacity-[0.82]" : "opacity-0",
