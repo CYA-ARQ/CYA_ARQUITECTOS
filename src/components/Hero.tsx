@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { studio } from "../data/siteData";
 import { assetPath } from "../lib/assets";
@@ -6,11 +6,11 @@ import { cn } from "../lib/utils";
 import { FloatingNavbar } from "./FloatingNavbar";
 import { LogoMark } from "./LogoMark";
 
-const heroVideo = assetPath("hero/cya-hero-loop.mp4?v=sync-20260604c");
-const heroPoster = assetPath("hero/cya-hero-loop-poster.webp?v=sync-20260604c");
-const heroVideoNight = assetPath("hero/cya-hero-loop-night.mp4?v=sync-20260604c");
-const heroPosterNight = assetPath("hero/cya-hero-loop-night-poster.webp?v=sync-20260604c");
-const themeSwitchSeekLead = 0.3;
+const heroVideo = assetPath("hero/cya-hero-loop.mp4?v=sync-20260604e");
+const heroPoster = assetPath("hero/cya-hero-loop-poster.webp?v=sync-20260604e");
+const heroVideoNight = assetPath("hero/cya-hero-loop-night.mp4?v=sync-20260604e");
+const heroPosterNight = assetPath("hero/cya-hero-loop-night-poster.webp?v=sync-20260604e");
+const syncThresholdSeconds = 0.01;
 
 type HeroProps = {
   isDark: boolean;
@@ -24,7 +24,7 @@ export function Hero({ isDark }: HeroProps) {
     document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const syncVideosFrom = (source: HTMLVideoElement | null, force = false) => {
+  const syncVideosFrom = useCallback((source: HTMLVideoElement | null, force = false) => {
     const dayVideo = dayVideoRef.current;
     const nightVideo = nightVideoRef.current;
 
@@ -35,28 +35,39 @@ export function Hero({ isDark }: HeroProps) {
     const target = source === dayVideo ? nightVideo : dayVideo;
     const sourceDuration = Number.isFinite(source.duration) ? source.duration : 0;
     const targetDuration = Number.isFinite(target.duration) ? target.duration : sourceDuration;
-    const rawNextTime = force ? source.currentTime + themeSwitchSeekLead : source.currentTime;
+    const rawNextTime = source.currentTime;
     const nextTime = targetDuration > 0 ? rawNextTime % targetDuration : rawNextTime;
 
-    if (force || Math.abs(target.currentTime - nextTime) > 0.015) {
+    if (force || Math.abs(target.currentTime - nextTime) > syncThresholdSeconds) {
       target.currentTime = nextTime;
     }
 
+    dayVideo.playbackRate = 1;
+    nightVideo.playbackRate = 1;
     void dayVideo.play().catch(() => undefined);
     void nightVideo.play().catch(() => undefined);
-  };
+  }, []);
 
-  useLayoutEffect(() => {
-    const syncVisiblePair = () => {
-      syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current);
+  useEffect(() => {
+    let frameId = 0;
+    let lastSyncTime = 0;
+    syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current, true);
+
+    const syncVisiblePair = (timestamp: number) => {
+      if (timestamp - lastSyncTime > 80) {
+        syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current);
+        lastSyncTime = timestamp;
+      }
+
+      frameId = window.requestAnimationFrame(syncVisiblePair);
     };
 
-    const intervalId = window.setInterval(syncVisiblePair, 1000);
+    frameId = window.requestAnimationFrame(syncVisiblePair);
 
     return () => {
-      window.clearInterval(intervalId);
+      window.cancelAnimationFrame(frameId);
     };
-  }, [isDark]);
+  }, [isDark, syncVideosFrom]);
 
   useEffect(() => {
     const handleBeforeThemeToggle = (event: Event) => {
@@ -66,7 +77,7 @@ export function Hero({ isDark }: HeroProps) {
 
     window.addEventListener("cya:before-theme-toggle", handleBeforeThemeToggle);
     return () => window.removeEventListener("cya:before-theme-toggle", handleBeforeThemeToggle);
-  }, []);
+  }, [syncVideosFrom]);
 
   return (
     <section id="inicio" className="px-4 pt-5 md:px-6 md:pt-8">
@@ -88,7 +99,7 @@ export function Hero({ isDark }: HeroProps) {
             poster={heroPoster}
             onLoadedMetadata={() => syncVideosFrom(dayVideoRef.current)}
             className={cn(
-              "absolute inset-0 h-full w-full scale-105 object-cover transition-opacity duration-700",
+              "absolute inset-0 h-full w-full object-contain transition-opacity duration-700",
               isDark ? "opacity-0" : "opacity-[0.9]",
             )}
           />
@@ -103,7 +114,7 @@ export function Hero({ isDark }: HeroProps) {
             poster={heroPosterNight}
             onLoadedMetadata={() => syncVideosFrom(dayVideoRef.current)}
             className={cn(
-              "absolute inset-0 h-full w-full scale-105 object-cover transition-opacity duration-700",
+              "absolute inset-0 h-full w-full object-contain transition-opacity duration-700",
               isDark ? "opacity-[0.82]" : "opacity-0",
             )}
           />
