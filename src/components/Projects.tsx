@@ -76,6 +76,7 @@ type ProjectCardProps = {
 
 function ProjectCard({ project, featured = false, isDark, className }: ProjectCardProps) {
   const image = isDark && project.darkImage ? project.darkImage : project.image;
+  const imagePosition = isDark && project.darkImagePosition ? project.darkImagePosition : project.imagePosition;
 
   return (
     <motion.article
@@ -96,6 +97,7 @@ function ProjectCard({ project, featured = false, isDark, className }: ProjectCa
           alt={`Proyecto ${project.name}`}
           loading={featured ? "eager" : "lazy"}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          style={imagePosition ? { objectPosition: imagePosition } : undefined}
         />
         <div
           className={cn(

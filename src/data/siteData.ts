@@ -10,6 +10,8 @@ export type Project = {
   location: string;
   image: string;
   darkImage?: string;
+  imagePosition?: string;
+  darkImagePosition?: string;
   featured?: boolean;
 };
 
@@ -105,6 +107,7 @@ export const projects: Project[] = [
     location: "Distrito de Jesús María, Lima, Perú",
     image: "/projects/biblioteca-academia-diplomatica.webp",
     darkImage: "/projects/night/biblioteca-academia-diplomatica.webp",
+    darkImagePosition: "50% 44%",
   },
   {
     name: "La Paz, Casa Pedregal",
