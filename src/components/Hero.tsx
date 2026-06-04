@@ -93,10 +93,10 @@ export function Hero({ isDark }: HeroProps) {
   }, [playVideos, syncVideosFrom]);
 
   return (
-    <section id="inicio" className="px-4 pt-5 md:px-6 md:pt-8">
+    <section id="inicio" className="px-3 pt-4 md:px-4 md:pt-5 xl:px-5">
       <div
         className={cn(
-          "relative mx-auto flex h-[600px] w-full max-w-[1400px] flex-col overflow-hidden rounded-[48px] border shadow-[0_40px_100px_-20px_rgba(0,0,0,0.03)] transition-colors duration-500",
+          "relative mx-auto flex h-[620px] w-full max-w-[1560px] flex-col overflow-hidden rounded-[48px] border shadow-[0_40px_100px_-20px_rgba(0,0,0,0.03)] transition-colors duration-500 lg:h-[min(720px,calc(100svh_-_52px))] lg:min-h-[640px]",
           isDark ? "border-white/10 bg-[#0b1017]" : "border-slate-200/50 bg-white",
         )}
       >
