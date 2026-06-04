@@ -31,7 +31,7 @@ export function MarqueeScroller({ isDark }: MarqueeScrollerProps) {
   const items = [...marqueeItems, ...marqueeItems];
 
   return (
-    <section className="mt-10 overflow-hidden">
+    <section className="mt-3 overflow-hidden md:mt-4">
       <div
         className="marquee mx-auto max-w-[1400px] overflow-hidden px-4"
         style={{
