@@ -6,11 +6,11 @@ import { cn } from "../lib/utils";
 import { FloatingNavbar } from "./FloatingNavbar";
 import { LogoMark } from "./LogoMark";
 
-const heroVideo = assetPath("hero/cya-hero-loop.mp4?v=sync-20260604e");
-const heroPoster = assetPath("hero/cya-hero-loop-poster.webp?v=sync-20260604e");
-const heroVideoNight = assetPath("hero/cya-hero-loop-night.mp4?v=sync-20260604e");
-const heroPosterNight = assetPath("hero/cya-hero-loop-night-poster.webp?v=sync-20260604e");
-const syncThresholdSeconds = 0.01;
+const heroVideo = assetPath("hero/cya-hero-loop.mp4?v=sync-20260604f");
+const heroPoster = assetPath("hero/cya-hero-loop-poster.webp?v=sync-20260604f");
+const heroVideoNight = assetPath("hero/cya-hero-loop-night.mp4?v=sync-20260604f");
+const heroPosterNight = assetPath("hero/cya-hero-loop-night-poster.webp?v=sync-20260604f");
+const syncThresholdSeconds = 0.005;
 
 type HeroProps = {
   isDark: boolean;
@@ -38,7 +38,9 @@ export function Hero({ isDark }: HeroProps) {
     const rawNextTime = source.currentTime;
     const nextTime = targetDuration > 0 ? rawNextTime % targetDuration : rawNextTime;
 
-    if (force || Math.abs(target.currentTime - nextTime) > syncThresholdSeconds) {
+    const delta = Math.abs(target.currentTime - nextTime);
+
+    if (force || delta > syncThresholdSeconds) {
       target.currentTime = nextTime;
     }
 
@@ -50,15 +52,10 @@ export function Hero({ isDark }: HeroProps) {
 
   useEffect(() => {
     let frameId = 0;
-    let lastSyncTime = 0;
     syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current, true);
 
-    const syncVisiblePair = (timestamp: number) => {
-      if (timestamp - lastSyncTime > 80) {
-        syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current);
-        lastSyncTime = timestamp;
-      }
-
+    const syncVisiblePair = () => {
+      syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current);
       frameId = window.requestAnimationFrame(syncVisiblePair);
     };
 
