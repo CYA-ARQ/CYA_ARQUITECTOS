@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { studio } from "../data/siteData";
 import { assetPath } from "../lib/assets";
@@ -10,6 +10,7 @@ const heroVideo = assetPath("hero/cya-hero-loop.mp4?v=sync-20260604b");
 const heroPoster = assetPath("hero/cya-hero-loop-poster.webp?v=sync-20260604b");
 const heroVideoNight = assetPath("hero/cya-hero-loop-night.mp4?v=sync-20260604b");
 const heroPosterNight = assetPath("hero/cya-hero-loop-night-poster.webp?v=sync-20260604b");
+const themeSwitchSeekLead = 0.3;
 
 type HeroProps = {
   isDark: boolean;
@@ -34,7 +35,8 @@ export function Hero({ isDark }: HeroProps) {
     const target = source === dayVideo ? nightVideo : dayVideo;
     const sourceDuration = Number.isFinite(source.duration) ? source.duration : 0;
     const targetDuration = Number.isFinite(target.duration) ? target.duration : sourceDuration;
-    const nextTime = targetDuration > 0 ? source.currentTime % targetDuration : source.currentTime;
+    const rawNextTime = force ? source.currentTime + themeSwitchSeekLead : source.currentTime;
+    const nextTime = targetDuration > 0 ? rawNextTime % targetDuration : rawNextTime;
 
     if (force || Math.abs(target.currentTime - nextTime) > 0.015) {
       target.currentTime = nextTime;
@@ -44,21 +46,27 @@ export function Hero({ isDark }: HeroProps) {
     void nightVideo.play().catch(() => undefined);
   };
 
-  useEffect(() => {
-    const previousVisibleVideo = isDark ? dayVideoRef.current : nightVideoRef.current;
+  useLayoutEffect(() => {
     const syncVisiblePair = () => {
       syncVideosFrom(isDark ? nightVideoRef.current : dayVideoRef.current);
     };
-    syncVideosFrom(previousVisibleVideo, true);
 
-    const timeoutId = window.setTimeout(() => syncVideosFrom(previousVisibleVideo, true), 50);
     const intervalId = window.setInterval(syncVisiblePair, 1000);
 
     return () => {
-      window.clearTimeout(timeoutId);
       window.clearInterval(intervalId);
     };
   }, [isDark]);
+
+  useEffect(() => {
+    const handleBeforeThemeToggle = (event: Event) => {
+      const nextIsDark = Boolean((event as CustomEvent<{ nextIsDark?: boolean }>).detail?.nextIsDark);
+      syncVideosFrom(nextIsDark ? dayVideoRef.current : nightVideoRef.current, true);
+    };
+
+    window.addEventListener("cya:before-theme-toggle", handleBeforeThemeToggle);
+    return () => window.removeEventListener("cya:before-theme-toggle", handleBeforeThemeToggle);
+  }, []);
 
   return (
     <section id="inicio" className="px-4 pt-5 md:px-6 md:pt-8">

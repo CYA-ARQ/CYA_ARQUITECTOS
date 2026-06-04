@@ -18,6 +18,12 @@ export default function App() {
     document.documentElement.dataset.theme = isDark ? "dark" : "light";
   }, [isDark]);
 
+  const toggleTheme = () => {
+    const nextIsDark = !isDark;
+    window.dispatchEvent(new CustomEvent("cya:before-theme-toggle", { detail: { nextIsDark } }));
+    window.setTimeout(() => setIsDark(nextIsDark), 120);
+  };
+
   return (
     <main
       className={cn(
@@ -25,7 +31,7 @@ export default function App() {
         isDark ? "bg-[#070a0f] text-slate-100" : "bg-[#f9fafb] text-[#0a1b33]",
       )}
     >
-      <ThemeToggle isDark={isDark} onToggle={() => setIsDark((value) => !value)} />
+      <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
       <Hero isDark={isDark} />
       <MarqueeScroller isDark={isDark} />
       <Services isDark={isDark} />
