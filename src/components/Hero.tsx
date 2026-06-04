@@ -6,10 +6,10 @@ import { cn } from "../lib/utils";
 import { FloatingNavbar } from "./FloatingNavbar";
 import { LogoMark } from "./LogoMark";
 
-const heroVideo = assetPath("hero/cya-hero-loop.mp4?v=sync-20260604b");
-const heroPoster = assetPath("hero/cya-hero-loop-poster.webp?v=sync-20260604b");
-const heroVideoNight = assetPath("hero/cya-hero-loop-night.mp4?v=sync-20260604b");
-const heroPosterNight = assetPath("hero/cya-hero-loop-night-poster.webp?v=sync-20260604b");
+const heroVideo = assetPath("hero/cya-hero-loop.mp4?v=sync-20260604c");
+const heroPoster = assetPath("hero/cya-hero-loop-poster.webp?v=sync-20260604c");
+const heroVideoNight = assetPath("hero/cya-hero-loop-night.mp4?v=sync-20260604c");
+const heroPosterNight = assetPath("hero/cya-hero-loop-night-poster.webp?v=sync-20260604c");
 const themeSwitchSeekLead = 0.3;
 
 type HeroProps = {
