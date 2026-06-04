@@ -69,7 +69,7 @@ export function About({ isDark }: AboutProps) {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7, ease: "easeOut" }}
           className={cn(
-            "overflow-hidden rounded-[40px] border shadow-[0_32px_90px_-45px_rgba(10,27,51,0.55)] transition-colors",
+            "aspect-square overflow-hidden rounded-[40px] border shadow-[0_32px_90px_-45px_rgba(10,27,51,0.55)] transition-colors",
             isDark ? "border-white/10 bg-[#111820]" : "border-slate-200/70 bg-white",
           )}
         >
@@ -77,7 +77,7 @@ export function About({ isDark }: AboutProps) {
             src={assetPath(isDark ? "projects/night/studio-collage.webp" : "projects/studio-collage.webp")}
             alt="Collage visual del estudio y proyectos de CYA Arquitectos"
             loading="lazy"
-            className="h-full min-h-[440px] w-full object-cover"
+            className="h-full w-full object-cover"
           />
         </motion.div>
       </div>
