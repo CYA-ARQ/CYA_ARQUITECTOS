@@ -1,4 +1,4 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, MessageCircle, Phone, PhoneCall } from "lucide-react";
 import { motion } from "motion/react";
 import { contactLinks } from "../data/siteData";
 import { cn } from "../lib/utils";
@@ -11,6 +11,8 @@ type ContactCTAProps = {
 
 export function ContactCTA({ isDark }: ContactCTAProps) {
   const email = contactLinks.find((link) => link.label === "Email")?.href ?? "#";
+  const phone = contactLinks.find((link) => link.label === "Teléfono")?.href ?? "tel:+51953674347";
+  const whatsapp = "https://wa.me/51953674347";
 
   return (
     <section id="contacto" className="px-4 py-20 transition-colors duration-500 md:px-6 md:py-28">
@@ -46,15 +48,43 @@ export function ContactCTA({ isDark }: ContactCTAProps) {
               Cuéntanos tu idea y te ayudaremos a convertirla en una propuesta arquitectónica
               clara, viable y profesional.
             </p>
-            <a
-              href={email}
-              className={cn(
-                "mt-9 inline-flex rounded-full px-7 py-3 text-[13px] font-semibold shadow-sm transition-transform hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c9a46a]",
-                isDark ? "bg-white text-[#070a0f]" : "bg-[#0a152d] text-white",
-              )}
-            >
-              Solicitar una reunión
-            </a>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <a
+                href={email}
+                className={cn(
+                  "inline-flex items-center justify-center rounded-full px-7 py-3 text-[13px] font-semibold shadow-sm transition-transform hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c9a46a]",
+                  isDark ? "bg-white text-[#070a0f]" : "bg-[#0a152d] text-white",
+                )}
+              >
+                Solicitar una reunión
+              </a>
+              <a
+                href={whatsapp}
+                target="_blank"
+                rel="noreferrer"
+                className={cn(
+                  "inline-flex items-center justify-center gap-2 rounded-full border px-5 py-3 text-[13px] font-semibold shadow-sm transition-transform hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c9a46a]",
+                  isDark
+                    ? "border-white/15 bg-white/10 text-white hover:border-white/30"
+                    : "border-slate-200 bg-white text-[#0a152d] hover:border-slate-300",
+                )}
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden="true" strokeWidth={1.9} />
+                WhatsApp
+              </a>
+              <a
+                href={phone}
+                className={cn(
+                  "inline-flex items-center justify-center gap-2 rounded-full border px-5 py-3 text-[13px] font-semibold shadow-sm transition-transform hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c9a46a]",
+                  isDark
+                    ? "border-white/15 bg-white/10 text-white hover:border-white/30"
+                    : "border-slate-200 bg-white text-[#0a152d] hover:border-slate-300",
+                )}
+              >
+                <PhoneCall className="h-4 w-4" aria-hidden="true" strokeWidth={1.9} />
+                Llamar
+              </a>
+            </div>
           </div>
 
           <div

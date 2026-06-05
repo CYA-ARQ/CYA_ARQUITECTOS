@@ -228,8 +228,8 @@ export const contactLinks: ContactLink[] = [
   },
   {
     label: "Email",
-    value: "cesguevara99@gmail.com",
-    href: "mailto:cesguevara99@gmail.com",
+    value: "cyarquitectos26@gmail.com",
+    href: "mailto:cyarquitectos26@gmail.com",
   },
   {
     label: "Ubicación",
