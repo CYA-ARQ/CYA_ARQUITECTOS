@@ -10,7 +10,7 @@ type ContactCTAProps = {
 };
 
 export function ContactCTA({ isDark }: ContactCTAProps) {
-  const email = contactLinks.find((link) => link.label === "Email")?.href ?? "#";
+  const email = "mailto:cyarquitectos26@gmail.com";
   const phone = contactLinks.find((link) => link.label === "Teléfono")?.href ?? "tel:+51953674347";
   const whatsapp = "https://wa.me/51953674347";
 
